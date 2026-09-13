@@ -732,6 +732,7 @@ body{background:#1a1a1a;font-family:var(--font);display:flex;align-items:center;
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .modal{background:#fff;border-radius:16px;padding:28px 24px;width:300px;text-align:center;animation:popIn .3s ease;}
 @keyframes popIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes chatTyping{0%,60%,100%{opacity:.3;transform:translateY(0);}30%{opacity:1;transform:translateY(-4px);}}
 .modal-icon{width:56px;height:56px;border-radius:50%;background:var(--c-primary-l);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
 .modal-icon svg{width:28px;height:28px;color:var(--c-primary);}
 .modal-title{font-size:18px;font-weight:700;color:var(--c-text);margin-bottom:8px;}
@@ -1425,6 +1426,14 @@ body{background:#1a1a1a;font-family:var(--font);display:flex;align-items:center;
         <span class="nav-action" onclick="showToast('更多功能')">···</span>
       </div>
       <div class="chat-scroll" id="chatScroll"></div>
+      <div id="chatTyping" style="display:none;align-items:center;gap:6px;padding:4px 16px 8px;">
+        <div style="display:flex;gap:4px;">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--c-muted);animation:chatTyping 1.2s infinite;"></div>
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--c-muted);animation:chatTyping 1.2s infinite .2s;"></div>
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--c-muted);animation:chatTyping 1.2s infinite .4s;"></div>
+        </div>
+        <span style="font-size:12px;color:var(--c-muted);">对方正在输入...</span>
+      </div>
       <div class="chat-quick" id="chatQuick"></div>
       <div class="chat-input-bar">
         <input class="chat-input" id="chatInput" placeholder="发条消息..." maxlength="200">
@@ -1670,13 +1679,62 @@ const DB = {
   ],
   tags: ['全部','职场转型','考研','创业','裸辞','情感','学业'],
   askCats: ['全部','待回复','已回复','职场','考研'],
-  timeline: [
-    {ver:5, tag:'第5次更新', time:'2026年3月', span:'距上次 2个月', isLatest:true, content:'<b>重新求职中。</b>春节后开始投简历，一个多月了，还没拿到offer。说实话，很多公司还是比较在意gap这件事的。面试时反复被问"这一年空白期在做什么"，解释起来挺费劲的。但我不后悔——这段平平凡凡的日子，让我想清楚了很多事情。投简历的同时，我在用AI编程工具做一些小项目，算是给自己找点事做。', asks:[{user:'林同学', text:'现在投了哪些方向？', also:8, alsoClicked:false}, {user:'匿名用户', text:'gap期间有没有做什么能写进简历的事？', also:15, alsoClicked:false}]},
-    {ver:4, tag:'第4次更新', time:'2026年1月', span:'距上次 3个月', isLatest:false, content:'<b>开始尝试AI编程工具。</b>脚踝伤好得差不多了，开始研究AI编程工具。用Cursor和Trae写了一些小工具，感觉AI确实降低了编程门槛。做了一两个小产品，没有上线，纯自用。这个过程中发现，技术栈变化太快了，我之前的经验可能需要更新。', asks:[]},
-    {ver:3, tag:'第3次更新', time:'2025年10月', span:'距上次 2个月', isLatest:false, content:'<b>脚踝韧带断裂。</b>打羽毛球把脚踝韧带打断了。养伤两个月，哪也去不了。这段时间反而很平静，每天看书、刷知乎、写点东西。伤好之后开始重新想接下来做什么。', asks:[]},
-    {ver:2, tag:'第2次更新', time:'2025年7月', span:'距上次 3个月', isLatest:false, content:'<b>裸辞后的生活。</b>离职三个月了。每天打羽毛球、看书、做饭，偶尔和朋友聚聚。没有焦虑也没有爽，就是平平凡凡地过着。积蓄还够撑一年，但我知道不能一直这样。开始想接下来做什么，但还没想好。', asks:[]},
-    {ver:1, tag:'首次回答', time:'2025年4月', span:'起点', isLatest:false, content:'<b>裸辞了。</b>一个程序员，在2025年4月离开了公司。没有下家，没有计划，就是不想干了。打羽毛球、看书、想清楚下一步。知乎上关于裸辞的回答太多了，但大部分是"刚裸辞"或者"裸辞后逆袭了"的。我想记录一个真实的完整过程，不管结局是什么。', asks:[]},
-  ],
+  storyMeta: {
+    1: {tag:'职场转型', title:'大家裸辞之后过得怎么样？', meta:'1369 关注 · 2.8万 浏览 · 2022年提问', stats:{updates:5, asks:47, agrees:'1.2k', span:'1年'}, aiQuestions:['裸辞这一年里，最后悔的事情是什么？','如果重来一次，你还会选择裸辞吗？','现在的收入和裸辞前比，变化大吗？'] },
+    4: {tag:'考研', title:'考研三战上岸，四年后的真心话', meta:'892 关注 · 4.1万 浏览 · 2021年提问', stats:{updates:7, asks:156, agrees:'3.5k', span:'4年'}, aiQuestions:['三战考研最大的动力是什么？','上岸后发现和预期最大的差距是什么？','给正在备考的人一句最真实的话？'] },
+    11: {tag:'考研', title:'考研调剂到双非，两年后我感谢这个结果', meta:'567 关注 · 2.9万 浏览 · 2023年提问', stats:{updates:5, asks:92, agrees:'2.3k', span:'2年'}, aiQuestions:['调剂到双非时是什么心情？','双非读研期间最大的收获是什么？','给调剂考生一个建议？'] },
+    3: {tag:'职场转型', title:'30岁转行做程序员，现在怎么样了？', meta:'2104 关注 · 3.2万 浏览 · 2023年提问', stats:{updates:6, asks:89, agrees:'2.1k', span:'2年'}, aiQuestions:['30岁转行最大的障碍是什么？','现在在大厂的真实感受？','转行前最该做的准备？'] },
+    5: {tag:'创业', title:'创业失败后，你现在怎么样了？', meta:'834 关注 · 2.3万 浏览 · 2024年提问', stats:{updates:3, asks:34, agrees:'980', span:'2年'}, aiQuestions:['创业失败最大的教训是什么？','还完债了吗？','还会再创业吗？'] },
+    6: {tag:'裸辞', title:'裸辞去大理的人，后来怎么样了？', meta:'1567 关注 · 5.6万 浏览 · 2020年提问', stats:{updates:8, asks:203, agrees:'4.2k', span:'5年'}, aiQuestions:['大理生活最大的落差是什么？','还打算回一线城市吗？','给想去大理的人一个忠告？'] },
+  },
+  timelines: {
+    1: [
+      {ver:5, tag:'第5次更新', time:'2026年3月', span:'距上次 2个月', isLatest:true, content:'<b>重新求职中。</b>春节后开始投简历，一个多月了，还没拿到offer。说实话，很多公司还是比较在意gap这件事的。面试时反复被问"这一年空白期在做什么"，解释起来挺费劲的。但我不后悔——这段平平凡凡的日子，让我想清楚了很多事情。投简历的同时，我在用AI编程工具做一些小项目，算是给自己找点事做。', asks:[{user:'林同学', text:'现在投了哪些方向？', also:8, alsoClicked:false}, {user:'匿名用户', text:'gap期间有没有做什么能写进简历的事？', also:15, alsoClicked:false}]},
+      {ver:4, tag:'第4次更新', time:'2026年1月', span:'距上次 3个月', isLatest:false, content:'<b>开始尝试AI编程工具。</b>脚踝伤好得差不多了，开始研究AI编程工具。用Cursor和Trae写了一些小工具，感觉AI确实降低了编程门槛。做了一两个小产品，没有上线，纯自用。这个过程中发现，技术栈变化太快了，我之前的经验可能需要更新。', asks:[]},
+      {ver:3, tag:'第3次更新', time:'2025年10月', span:'距上次 2个月', isLatest:false, content:'<b>脚踝韧带断裂。</b>打羽毛球把脚踝韧带打断了。养伤两个月，哪也去不了。这段时间反而很平静，每天看书、刷知乎、写点东西。伤好之后开始重新想接下来做什么。', asks:[]},
+      {ver:2, tag:'第2次更新', time:'2025年7月', span:'距上次 3个月', isLatest:false, content:'<b>裸辞后的生活。</b>离职三个月了。每天打羽毛球、看书、做饭，偶尔和朋友聚聚。没有焦虑也没有爽，就是平平凡凡地过着。积蓄还够撑一年，但我知道不能一直这样。开始想接下来做什么，但还没想好。', asks:[]},
+      {ver:1, tag:'首次回答', time:'2025年4月', span:'起点', isLatest:false, content:'<b>裸辞了。</b>一个程序员，在2025年4月离开了公司。没有下家，没有计划，就是不想干了。打羽毛球、看书、想清楚下一步。知乎上关于裸辞的回答太多了，但大部分是"刚裸辞"或者"裸辞后逆袭了"的。我想记录一个真实的完整过程，不管结局是什么。', asks:[]},
+    ],
+    4: [
+      {ver:7, tag:'第7次更新', time:'2026年1月', span:'距上次 4个月', isLatest:true, content:'<b>毕业半年了。</b>终于毕业了，入职了一家二线互联网公司做算法。说实话，薪资比我本科同学高不了太多，但比我预想的读研回报确实低。不过我不后悔三战——读研让我遇到了现在的导师，研究方向我真的很喜欢。给正在备考的人一句话：别为了逃避就业去考研，那样你会很痛苦。', asks:[{user:'考研er', text:'三战上岸后最后悔的是什么？', also:12, alsoClicked:false}, {user:'匿名用户', text:'读研期间最大的落差是什么？', also:9, alsoClicked:false}]},
+      {ver:6, tag:'第6次更新', time:'2025年9月', span:'距上次 5个月', isLatest:false, content:'<b>秋招开始了。</b>终于体会到师兄说的"读研最焦虑的是秋招"。投了40多家，面了十几场。发现算法岗竞争太激烈了，很多岗位要顶会论文。我只有一篇水会，比较被动。最后拿到两个offer，都不算特别满意，但也不差。', asks:[]},
+      {ver:5, tag:'第5次更新', time:'2025年4月', span:'距上次 6个月', isLatest:false, content:'<b>研二下学期了。</b>方向从NLP转到了多模态，导师给的课题挺新的。投了一篇会，中了。但说实话，科研的快乐和痛苦并存——idea被reject的时候比被accept的时候多得多。有时候会怀疑自己适不适合读研。', asks:[]},
+      {ver:4, tag:'第4次更新', time:'2024年10月', span:'距上次 5个月', isLatest:false, content:'<b>研二上学期，开始焦虑了。</b>看着本科同学都工作两年了，有车有房，我还在实验室搬砖。有时候会怀疑三战的决定。但导师很好，给我推荐了实习，在一家AI公司做了三个月，感觉研究方向是有前途的。', asks:[]},
+      {ver:3, tag:'第3次更新', time:'2024年5月', span:'距上次 6个月', isLatest:false, content:'<b>研一下学期。</b>慢慢适应了读研节奏。说实话，研究生和本科完全不一样——没有人盯着你，全靠自己驱动。第一学期很迷茫，看了大量论文但不知道做什么方向。这学期终于确定了方向，开始跟着师兄做实验。', asks:[]},
+      {ver:2, tag:'第2次更新', time:'2023年11月', span:'距上次 3个月', isLatest:false, content:'<b>入学三个月了。</b>终于上岸了，但入学后发现和我想的完全不一样。导师方向偏理论，我本想做应用。第一学期在补数学基础，每天看公式看到头秃。不过同学们都很优秀，讨论问题很有收获。三战的辛苦值不值？现在还不好说。', asks:[]},
+      {ver:1, tag:'首次回答', time:'2023年8月', span:'起点', isLatest:false, content:'<b>三战上岸了。</b>第一年差3分，第二年差1分，第三年终于上岸了。查到成绩那天我哭了，不是感动，是释然。三次考研，我失去了太多——朋友结婚我没去，家人住院我在背书。但我不后悔，因为我知道自己要什么。知乎上很多人问考研值不值，我想用四年的时间来回答这个问题。', asks:[]},
+    ],
+    11: [
+      {ver:5, tag:'第5次更新', time:'2026年3月', span:'距上次 3个月', isLatest:true, content:'<b>发了顶会，要毕业了。</b>论文中了CVPR！说实话调剂到双非那天觉得天塌了，现在回头看，这是我人生最大的幸运。导师是真正的学者型，从不抢一作，给学生方向自由度。实验室氛围好，没有PUA，没有打卡。如果你正在纠结要不要调剂——双不双非不重要，导师才是关键。', asks:[{user:'考研调剂er', text:'怎么判断一个导师好不好？', also:18, alsoClicked:false}, {user:'匿名用户', text:'双非发顶会难吗？', also:11, alsoClicked:false}]},
+      {ver:4, tag:'第4次更新', time:'2025年12月', span:'距上次 4个月', isLatest:false, content:'<b>投稿了，在等结果。</b>导师让我试投CVPR，其实自己觉得希望不大。双非的劣势确实在——审稿人看到学校名字可能会有偏见。但导师说"好工作自己会说话"，让我别怕。投稿等结果的日子比考研等成绩还煎熬。', asks:[]},
+      {ver:3, tag:'第3次更新', time:'2025年8月', span:'距上次 6个月', isLatest:false, content:'<b>研二了，开始出成果。</b>导师给的课题终于有了突破，投了一篇EI会议练手，中了。虽然不是顶会，但给了我信心。其实读研最重要的不是学校牌子，是你能不能做出东西来。双非也有牛导师，985也有混日子的。', asks:[]},
+      {ver:2, tag:'第2次更新', time:'2025年2月', span:'距上次 6个月', isLatest:false, content:'<b>入学半年了。</b>说实话，刚来的时候很自卑，不敢说自己学校名字。但导师真的太好了——每周一对一讨论，手把手改论文，从不push。同学们也都很好，没有恶性竞争。慢慢觉得，调剂不是失败，是换了一条路。', asks:[]},
+      {ver:1, tag:'首次回答', time:'2024年8月', span:'起点', isLatest:false, content:'<b>调剂到双非了。</b>第一志愿985差了8分，调剂系统里找到一个双非学校收了我。查到录取结果那天我在天台坐了一下午，觉得人生完蛋了。但导师看了我的简历后主动联系我，说方向很匹配。当时觉得他在画饼，现在发现他说的是真的。我想记录调剂后的真实经历，给同样迷茫的人一个参考。', asks:[]},
+    ],
+    3: [
+      {ver:6, tag:'第6次更新', time:'2026年2月', span:'距上次 4个月', isLatest:true, content:'<b>在大厂搬砖两年了。</b>说出来你们可能不信，32岁进大厂比我想的容易，但留下来比我想的难。组里都是95后甚至00后，体力好、学得快。我靠的是经验优势——遇到问题能快速定位，这是年龄带来的。但也确实扛不住996了，最近在考虑转管理岗。', asks:[{user:'想转行的人', text:'30岁转行最大的障碍是什么？', also:15, alsoClicked:false}, {user:'匿名用户', text:'和年轻同事相处有压力吗？', also:8, alsoClicked:false}]},
+      {ver:5, tag:'第5次更新', time:'2025年10月', span:'距上次 5个月', isLatest:false, content:'<b>转正了，终于稳定下来。</b>试用期三个月差点没过，技术栈全是新的，每天加班到11点学东西。leader找我谈话，说"你学习能力不如年轻人，但解决问题的思路很成熟"。最后勉强过了试用期。现在终于不用每天提心吊胆了。', asks:[]},
+      {ver:4, tag:'第4次更新', time:'2025年5月', span:'距上次 5个月', isLatest:false, content:'<b>入职大厂三个月了。</b>确实累，996不是开玩笑的。但薪资翻倍了，生活改善很大。最大的感受是：大厂的技术深度确实不一样，以前在小公司遇到的瓶颈在这里都有成熟的解决方案。30岁转行值得吗？现在觉得值，但不确定35岁会怎样。', asks:[]},
+      {ver:3, tag:'第3次更新', time:'2024年12月', span:'距上次 6个月', isLatest:false, content:'<b>拿到了大厂offer。</b>面了7轮，最后一面总监问我"你这个年龄还能加班吗"，我直接说"能"。入职前体检报告一切正常，但确实比25岁的时候胖了20斤。大厂给的薪资是之前两倍，但我也知道这是用命换的。', asks:[]},
+      {ver:2, tag:'第2次更新', time:'2024年6月', span:'距上次 6个月', isLatest:false, content:'<b>培训班毕业了，开始找工作。</b>投了200多份简历，面试了30多次。很多公司看到年龄就拒了。最后拿到两个offer，一个创业公司一个外包。选了创业公司，薪资比之前低30%，但至少进了技术岗。白天上班晚上刷题，目标是大厂。', asks:[]},
+      {ver:1, tag:'首次回答', time:'2023年12月', span:'起点', isLatest:false, content:'<b>30岁，我决定转行做程序员。</b>之前做了8年销售，做到了区域经理。但这个行业天花板太低了，而且我一直对编程有兴趣。裸辞报了培训班，学Java。很多人说30岁转行太晚了，但我觉得——种一棵树最好的时间是十年前，其次是现在。我想记录这个过程，给同样犹豫的人一个参考。', asks:[]},
+    ],
+    5: [
+      {ver:3, tag:'第3次更新', time:'2026年1月', span:'距上次 8个月', isLatest:true, content:'<b>还完债了，也在重新出发。</b>花了一年半，把创业欠的债还清了。现在在一家公司做产品，薪资不高但稳定。说实话，创业失败教会我的东西，比打工十年都多。比如——现金流比梦想重要，用户付费比用户喜欢重要。不排除以后还会创业，但一定是在有充分准备的情况下。', asks:[{user:'想创业的人', text:'创业最大的坑是什么？', also:14, alsoClicked:false}, {user:'匿名用户', text:'还会再创业吗？', also:9, alsoClicked:false}]},
+      {ver:2, tag:'第2次更新', time:'2025年5月', span:'距上次 5个月', isLatest:false, content:'<b>回到打工岗位了。</b>找了个产品经理的工作，薪资是创业前的一半。但说实话，有个稳定收入的感觉太好了。每天下班后不用想公司的事，周末能休息。同事觉得我很沉稳，但他们不知道这种沉稳是亏了20万换来的。', asks:[]},
+      {ver:1, tag:'首次回答', time:'2024年8月', span:'起点', isLatest:false, content:'<b>创业失败了。</b>2024年初all in做AI应用，半年烧完了积蓄。产品上线了，有用户，但没有付费。投资人说"方向不对"，不投了。遣散了团队3个人，把最后的钱发给了他们。现在我去找了一份打工还债的工作。知乎上创业成功的故事太多了，我想写一个失败的，真实的。', asks:[]},
+    ],
+    6: [
+      {ver:8, tag:'第8次更新', time:'2026年2月', span:'距上次 8个月', isLatest:true, content:'<b>五年了，还在大理。</b>很多人以为我"逃离了大理"，其实没有。只是不再浪漫化了。开了一家小工作室，做设计接单，收入够生活。苍山还在，洱海还在，但我也开始想回城市了。不是因为大理不好，是因为我需要更多的碰撞和灵感。也许明年会回去，也许不会。人生没有标准答案，只有不同的后来。', asks:[{user:'想去大理的人', text:'大理生活最大的落差是什么？', also:23, alsoClicked:false}, {user:'匿名用户', text:'还打算回一线城市吗？', also:17, alsoClicked:false}]},
+      {ver:7, tag:'第7次更新', time:'2025年6月', span:'距上次 10个月', isLatest:false, content:'<b>开了工作室。</b>终于不用靠积蓄生活了。在大理认识了一群做独立设计的朋友，一起开了个小工作室。接单、做设计、分钱。不多，但够生活。回头看看，"逃离北上广"这句话太浪漫了，真实的大理生活是：交房租、买菜做饭、接单赶稿。和在城市里没本质区别，只是节奏慢了。', asks:[]},
+      {ver:6, tag:'第6次更新', time:'2024年8月', span:'距上次 8个月', isLatest:false, content:'<b>开始接单了。</b>积蓄快见底的时候，终于开始接到设计单子了。主要靠之前在知乎积累的粉丝。说实话，在大理做自由职业没有想象中那么惬意——没有人盯着你，但也没有人保障你。冬天大理很冷，没有暖气，裹着被子赶稿的日子，和在北京加班也没什么区别。', asks:[]},
+      {ver:5, tag:'第5次更新', time:'2023年12月', span:'距上次 8个月', isLatest:false, content:'<b>已经一年没有收入了。</b>来大理快两年了，花完了积蓄。开始焦虑了。之前觉得"逃离"很酷，现在发现不赚钱是真的会饿。开始接一些零散的设计单子，但很不稳定。开始理解为什么很多人"逃离"了又回去了。', asks:[]},
+      {ver:4, tag:'第4次更新', time:'2023年4月', span:'距上次 6个月', isLatest:false, content:'<b>来大理一年了。</b>新鲜感过了。每天的生活变成了：早上逛菜市场，白天看书喝茶，下午遛狗，晚上看星星。很慢，很安静，但有时候也会觉得空虚。开始想：我是在生活，还是在逃避？', asks:[]},
+      {ver:3, tag:'第3次更新', time:'2022年10月', span:'距上次 4个月', isLatest:false, content:'<b>在大理安顿下来了。</b>租了一个小院子，养了一只狗。认识了一些"同样逃离来大理的人"，大家偶尔聚聚。但说实话，很多人来了又走了，能留下来的不多。大理的冬天很冷，比想象中冷。', asks:[]},
+      {ver:2, tag:'第2次更新', time:'2022年6月', span:'距上次 3个月', isLatest:false, content:'<b>来大理三个月了。</b>刚来的时候觉得每天都像度假。苍山洱海，蓝天白云。但新鲜感过了之后，开始发现问题——快递慢、外卖少、没有24小时便利店。最重要的一点：没有收入。积蓄在一点一点减少。', asks:[]},
+      {ver:1, tag:'首次回答', time:'2022年3月', span:'起点', isLatest:false, content:'<b>我裸辞去大理了。</b>在北京做了5年设计，996到身体出了问题。有天加班到凌晨3点，看着窗外的霓虹灯突然觉得——我不要这种生活了。第二天提了辞职，买了去大理的机票。知乎上很多人问"逃离北上广后来怎么样了"，我就是那个"后来"的人。我想记录真实的后来，不是爽文，不是劝退，就是真实的。', asks:[]},
+    ],
+  },
   preAsks: [
     {id:1, user:'匿名用户', avatar:'?', time:'3天前', text:'裸辞这一年里，最后悔的事情是什么？', status:'replied', story:'陈默 · 裸辞一年后', likes:15, reply:'最后悔的是没有在裸辞前攒更多的钱。半年的积蓄撑不了多久，到后面会有压力。但后悔也没用，这段经历让我学会了规划。'},
     {id:2, user:'林同学', avatar:'林', time:'5天前', text:'如果重来一次，你还会选择裸辞吗？', status:'replied', story:'陈默 · 裸辞一年后', likes:22, reply:'会，但我会先存够一年的钱再辞。裸辞本身不后悔，但准备不够充分是真的。'},
@@ -1863,7 +1921,7 @@ function renderFeed(){
     return;
   }
   document.getElementById('storyFeed').innerHTML = filtered.map(s => `
-    <div class="story-card" onclick="navigate('timeline')">
+    <div class="story-card" onclick="openStoryById(${s.id})">
       <div class="sc-head">
         <div class="sc-avatar"><img src="assets/liukanshan-${s.id % 2 === 0 ? 'white' : 'blue'}.jpg" alt="${s.author}"></div>
         <div>
@@ -1948,13 +2006,51 @@ function renderUserFeed(){
 }
 
 function openStoryById(id){
+  State.currentStoryId = id;
+  const story = DB.stories.find(s => s.id === id);
+  if(!story) return;
+  const meta = DB.storyMeta[id] || DB.storyMeta[1];
+  const timeline = DB.timelines[id] || DB.timelines[1];
+
+  const qTag = document.querySelector('.tl-q-tag');
+  const qTitle = document.querySelector('.tl-q-title');
+  const qMeta = document.querySelector('.tl-q-meta');
+  const statsEls = document.querySelectorAll('.tl-stat-num');
+  const aiSuggest = document.getElementById('aiSuggest');
+
+  if(qTag) qTag.textContent = meta.tag;
+  if(qTitle) qTitle.textContent = meta.title;
+  if(qMeta) qMeta.innerHTML = meta.meta.split(' · ').map(m => `<span>${m}</span>`).join('');
+  if(statsEls.length >= 4){
+    statsEls[0].textContent = meta.stats.updates;
+    statsEls[1].textContent = meta.stats.asks;
+    statsEls[2].textContent = meta.stats.agrees;
+    statsEls[3].textContent = meta.stats.span;
+  }
+  if(aiSuggest && meta.aiQuestions){
+    const aiQs = aiSuggest.querySelectorAll('.ai-q');
+    meta.aiQuestions.forEach((q, i) => {
+      if(aiQs[i]) aiQs[i].innerHTML = `<b>Q${i+1}</b>${q}`;
+    });
+  }
+
+  State.expandedTL = {};
+  renderTimeline(id);
   navigate('timeline');
   showToast('已打开故事');
 }
 
 // ========== Render: Timeline ==========
-function renderTimeline(){
-  document.getElementById('timelineBody').innerHTML = DB.timeline.map((e, i) => `
+function renderTimeline(storyId){
+  const sid = storyId || State.currentStoryId || 1;
+  const tl = DB.timelines[sid] || DB.timelines[1];
+  const story = DB.stories.find(s => s.id === sid) || DB.stories[0];
+  const author = story.author;
+  const avatarHTML = story.avatar.startsWith('assets/')
+    ? `<img src="${story.avatar}" alt="${author}">`
+    : story.avatar;
+
+  document.getElementById('timelineBody').innerHTML = tl.map((e, i) => `
     <div class="tl-entry ${e.isLatest ? 'latest' : ''}">
       <div class="tl-dot"></div>
       <div class="tl-ver">
@@ -1963,8 +2059,8 @@ function renderTimeline(){
         <span class="tl-span">${e.span}</span>
       </div>
       <div class="tl-author-row">
-        <div class="tl-avatar"><img src="assets/liukanshan-blue.jpg" alt="陈默"></div>
-        <span class="tl-author">陈默</span>
+        <div class="tl-avatar">${avatarHTML}</div>
+        <span class="tl-author">${author}</span>
       </div>
       <div class="tl-content ${i !== 0 ? 'collapsed' : ''}" id="tlc${i}">${e.content}</div>
       ${i !== 0 ? `<div class="tl-expand" onclick="expandTL(${i})">展开全文 ↓</div>` : ''}
@@ -1973,7 +2069,7 @@ function renderTimeline(){
         <div class="tl-act" onclick="navigate('poster')"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="m21 15-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>生成海报</div>
         <div class="tl-act" onclick="showToast('链接已复制')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>分享</div>
       </div>
-      ${e.asks.length ? `<div class="ask-list"><div class="ask-list-title">追问 (${e.asks.length})</div>${e.asks.map((a,j) => `<div class="ask-item"><div class="ask-item-content"><span class="ask-item-user">${a.user}</span> <span class="ask-item-text">${a.text}</span></div><span class="ask-also ${a.alsoClicked?'clicked':''}" id="also${i}_${j}" onclick="toggleAlso(${i},${j})">${a.alsoClicked?'已想问':a.also+'人也想问'}</span></div>`).join('')}</div>` : ''}
+      ${e.asks.length ? `<div class="ask-list"><div class="ask-list-title">追问 (${e.asks.length})</div>${e.asks.map((a,j) => `<div class="ask-item"><div class="ask-item-content"><span class="ask-item-user">${a.user}</span> <span class="ask-item-text">${a.text}</span></div><span class="ask-also ${a.alsoClicked?'clicked':''}" id="also${i}_${j}" onclick="toggleAlso(${i},${j},${sid})">${a.alsoClicked?'已想问':a.also+'人也想问'}</span></div>`).join('')}</div>` : ''}
     </div>
   `).join('');
 }
@@ -1998,8 +2094,9 @@ function toggleAgree(i){
   }
 }
 
-function toggleAlso(i, j){
-  const a = DB.timeline[i].asks[j];
+function toggleAlso(i, j, sid){
+  const tl = DB.timelines[sid || State.currentStoryId || 1] || DB.timelines[1];
+  const a = tl[i].asks[j];
   const el = document.getElementById(`also${i}_${j}`);
   if(a.alsoClicked){
     a.alsoClicked = false;
@@ -2761,20 +2858,123 @@ function sendChatMsg(){
 }
 
 function simulateReply(uid, myText){
-  const replies = {
-    'chenmo': ['哈哈这个问题有意思', '等我下次更新详细说', '欢迎随时来聊', '裸辞后这一年确实想了很多'],
-    'susu': ['大理这边最近可美了', '你说得对,后来都平淡', '欢迎来玩啊~', '我也有同感'],
-    'linxiaoman': ['谢谢你的关注~', '自律这事儿确实反人性', '下次更新会说到的', '加油!'],
-    'laok': ['大厂没那么神秘', '技术栈更新太快确实', '欢迎追问', '程序员是终身学习'],
+  const u = getUser(uid);
+  if(!u) return;
+
+  const typingEl = document.getElementById('chatTyping');
+  if(typingEl) typingEl.style.display = 'flex';
+
+  const result = generateContextualReply(uid, myText, u);
+  const totalDelay = result.messages.reduce((sum, m) => sum + (m.delay || 1500), 0);
+
+  let elapsed = 0;
+  result.messages.forEach((msg, idx) => {
+    elapsed += msg.delay || 1500;
+    setTimeout(() => {
+      if(typingEl && idx === result.messages.length - 1) typingEl.style.display = 'none';
+      State.chats[uid].push({from:'them', text:msg.text, time:formatNow()});
+      u.lastMsg = msg.text;
+      u.lastTime = '刚刚';
+      if(currentChatUser && currentChatUser.id === uid){
+        renderChatDetail();
+        if(typingEl && idx < result.messages.length - 1) typingEl.style.display = 'flex';
+      }
+      renderChatList();
+    }, elapsed);
+  });
+}
+
+function generateContextualReply(uid, myText, user){
+  const text = myText.toLowerCase();
+  const story = DB.stories.find(s => s.author === user.name);
+  const tag = user.tag || (story ? story.tag : '');
+
+  const replyPool = {
+    'chenmo': {
+      greeting: ['嘿，你好呀！', '你好！看到有人关注我的故事还挺感动的', '哈喽！没想到有人会来私信我'],
+      question: ['这个问题我想了很久……说实话没有标准答案', '你问到了点子上，这正是我这一年一直在想的', '好问题，等我下次更新的时候会详细说这个', '其实我也没完全想清楚，但可以聊聊我的感受'],
+      regret: ['后悔过吗？说没有是假的。但不是后悔裸辞，是后悔没有提前攒更多钱', '有时候半夜醒来会想"我是不是疯了"，但白天又觉得值', '后悔的是浪费了太多时间在焦虑上，而不是裸辞本身'],
+      money: ['积蓄花得比想象中快，半年就紧张了', '说实话现在经济压力挺大的，但我不想为了钱随便找个工作', '投简历的同时在用AI做点小项目，希望能有点收入'],
+      job: ['投了前端和全栈方向，大厂小厂都在投', '面试时反复被问gap这一年的事，解释起来挺费劲的', '一个多月了还没拿到offer，有点慌但不绝望'],
+      future: ['说实话还没完全想清楚，但方向比辞职时清晰多了', '可能在积累一段时间后做自己的产品', '不管怎样，这段经历让我更了解自己了'],
+      generic: ['嗯，我懂你的意思', '说起来容易做起来难啊哈哈', '你也有类似的经历吗？', '谢谢你的关心，我会继续更新的', '其实每个人的路不一样，我只是记录我的', '你的话让我想到了一些事情，下次更新聊聊'],
+    },
+    'susu': {
+      greeting: ['哈喽！你也想来大理吗？', '你好呀！大理今天天气超好~', '嗨！看到有人关注我的故事好开心'],
+      question: ['这个问题被问了好多次哈哈', '说来话长，可以参考我的时间线更新', '你说的这个我确实深有体会', '好问题！我下次更新会聊到'],
+      life: ['大理的生活没有朋友圈里那么美，但确实慢下来了', '快递慢、外卖少、没有便利店，但这些都能忍', '冬天很冷，没有暖气，比想象中难熬'],
+      money: ['来大理两年没有收入，靠积蓄撑着', '后来开始接设计单子，慢慢稳定了', '开工作室后才算真的安定下来'],
+      return: ['最近确实在想回城市的事', '不是大理不好，是我需要更多的碰撞', '也许明年会回去，也许不会'],
+      generic: ['哈哈你说得对', '大理这边确实是这样', '你的感受我能理解', '每个人选择不同嘛', '谢谢你来聊~', '其实后来都平淡了，重要的是过程'],
+    },
+    'linxiaoman': {
+      greeting: ['你好呀！谢谢关注我的故事~', '嗨！没想到自律这个话题这么多人关心', '哈喽！你也在坚持什么吗？'],
+      question: ['自律这个事我折腾了三年，有些心得', '说真的，自律不是靠意志力', '好问题！下次更新我会详细说', '这个问题问到关键了'],
+      persist: ['坚持下来的：早起、运动。没坚持的：读书、学英语', '说实话，自律是反人性的，关键是降低门槛', '我发现微习惯比宏大计划有用得多'],
+      generic: ['加油！你也在坚持吗？', '自律这事儿确实不容易', '谢谢你的鼓励~', '下次更新会说到的', '每个人都有自己的节奏', '你的话让我很有共鸣'],
+    },
+    'laok': {
+      greeting: ['你好！30岁转行的老哥来报到', '嗨！也在考虑转行吗？', '哈喽！看到年轻人转行我就想起当年的自己'],
+      question: ['大厂没你想的那么神秘，也没那么光鲜', '技术更新快，但解决问题的思路是通用的', '这个问题我在时间线里聊过，可以看看', '好问题，等我更新详细说'],
+      age: ['32进大厂确实老了，组里都是95后', '体力确实不如年轻人，但经验有优势', '面试时总监问我还能不能加班，我说能……其实心里也打鼓'],
+      learn: ['培训班学的Java，但工作中用到的远不止这些', '白天上班晚上刷题，持续了大半年', '技术栈更新太快，必须持续学习'],
+      generic: ['欢迎追问！', '程序员是终身学习的职业', '你的话有道理', '转行不易，但值得', '谢谢关注我的故事', '有想法随时聊'],
+    },
+    'aqing': {
+      greeting: ['你好！三战考研的过来人来了', '嗨！也在备考吗？', '哈喽！关注考研话题的朋友你好'],
+      question: ['三战的事我有太多话想说', '这个问题我当初也问过自己无数遍', '等下次更新我会详细聊这个', '考研值不值，我用四年回答了'],
+      persist: ['三年差3分、差1分、终于上岸，个中辛酸只有自己知道', '最难的不是考试，是看着身边的人都在往前走', '但我不后悔，因为我知道自己要什么'],
+      value: ['读研回报确实比预想低，但导师和方向我真的很喜欢', '别为了逃避就业去考研，那样你会很痛苦', '薪资和本科同学高不了太多，但路不一样'],
+      generic: ['加油！你也在备考吗？', '三战确实需要勇气', '谢谢关注我的故事', '每个人的路不一样', '有问题随时聊', '你的话让我很有共鸣'],
+    },
+    _default: {
+      greeting: ['你好呀！谢谢关注', '嗨！看到有人来聊挺开心的', '哈喽！'],
+      question: ['好问题，让我想想', '这个我下次更新聊聊', '你说的这点我也在想', '说实话我也不完全确定'],
+      generic: ['嗯嗯', '说得太对了', '你的感受我理解', '谢谢关注', '每个人路不一样', '有空再聊'],
+    },
   };
-  const pool = replies[uid] || ['收到~', '嗯嗯', '谢谢', '欢迎来聊', '好问题', '下次更新详说'];
-  const reply = pool[Math.floor(Math.random() * pool.length)];
-  setTimeout(() => {
-    State.chats[uid].push({from:'them', text:reply, time:formatNow()});
-    if(currentChatUser && currentChatUser.id === uid){
-      renderChatDetail();
-    }
-  }, 1200);
+
+  const pool = replyPool[uid] || replyPool['_default'];
+  let category = 'generic';
+
+  if(/你好|哈喽|嗨|在吗|你好呀/.test(text)) category = 'greeting';
+  else if(/后悔|后悔吗|值不值|值得/.test(text)) category = 'regret';
+  else if(/钱|收入|积蓄|存款|经济|工资|薪资/.test(text)) category = 'money';
+  else if(/工作|求职|面试|offer|简历|投/.test(text)) category = 'job';
+  else if(/大理|生活|日常|那边|城市/.test(text)) category = 'life';
+  else if(/回去|回城市|回一线|离开/.test(text)) category = 'return';
+  else if(/坚持|自律|习惯|早起/.test(text)) category = 'persist';
+  else if(/年龄|岁|老了|体力|加班|996/.test(text)) category = 'age';
+  else if(/学|学什么|技术|栈|编程|java|python/.test(text)) category = 'learn';
+  else if(/导师|老师|导师好不好|选择导师/.test(text)) category = 'mentor';
+  else if(/论文|顶会|投稿|发paper|cvpr/.test(text)) category = 'paper';
+  else if(/三战|坚持考研|几年|考几年/.test(text)) category = 'persist';
+  else if(/值不值|读研值|考研值|回报/.test(text)) category = 'value';
+  else if(/将来|以后|未来|打算|计划|接下来/.test(text)) category = 'future';
+  else if(/？|\?|怎么|为什么|什么|哪里|哪个|多少|是否|是不是|能不能|会不会/.test(text)) category = 'question';
+
+  const candidates = pool[category] || pool['generic'];
+  const mainReply = candidates[Math.floor(Math.random() * candidates.length)];
+
+  const messages = [{text: mainReply, delay: 1000 + Math.random() * 1000}];
+
+  if(Math.random() < 0.4){
+    const followups = [
+      '你呢？也有类似的经历吗？',
+      '说多了哈哈，下次更新再聊吧',
+      '其实每个人的路不一样，我只是记录我的',
+      '你的关注让我很有动力继续更新',
+      '有什么想问的随时说',
+    ];
+    messages.push({text: followups[Math.floor(Math.random() * followups.length)], delay: 800 + Math.random() * 800});
+  }
+
+  if(Math.random() < 0.15){
+    const reactions = ['哈哈', '嗯嗯', '确实', '说得太对了', '深有同感'];
+    messages.unshift({text: reactions[Math.floor(Math.random() * reactions.length)], delay: 600 + Math.random() * 600});
+  }
+
+  return {messages};
 }
 
 function updateChatSendBtn(){
