@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后来的答案 — 参赛补充材料</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f5f0e8 0%, #ede4d3 100%);
+  color: #2c2c2c;
+  line-height: 1.8;
+}
+.header {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.header h1 { font-size: 2.4em; margin-bottom: 10px; letter-spacing: 2px; }
+.header p { font-size: 1.1em; opacity: 0.9; }
+.header .meta { margin-top: 15px; font-size: 0.9em; opacity: 0.7; }
+.container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+.section { margin-bottom: 50px; }
+.section h2 {
+  font-size: 1.6em;
+  color: #4a3f6b;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #d4c5a9;
+}
+.intro-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+.intro-box p { margin-bottom: 12px; font-size: 1.05em; }
+.intro-box .highlight {
+  color: #764ba2;
+  font-weight: bold;
+}
+.links-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.links-box a {
+  display: inline-block;
+  margin: 8px 12px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 1em;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.links-box a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+}
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+.poster-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.poster-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.poster-card img {
+  width: 100%;
+  display: block;
+}
+.poster-card .label {
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  color: #4a3f6b;
+  font-size: 1.05em;
+}
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+.feature-item {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-left: 4px solid #764ba2;
+}
+.feature-item .num {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #764ba2;
+}
+.feature-item .desc {
+  margin-top: 6px;
+  font-size: 0.95em;
+  color: #555;
+}
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #888;
+  font-size: 0.85em;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>后来的答案</h1>
+  <p>每一个选择 · 都有后来的答案</p>
+  <div class="meta">知乎黑客松 2026 · 参赛补充材料</div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>项目简介</h2>
+    <div class="intro-box">
+      <p>「后来的答案」是一个基于知乎生态的内容产品，核心功能是帮助用户追踪知乎回答的「后来」——那些年写下的回答，后来怎么样了。</p>
+      <p>产品分为两个部分：<span class="highlight">Campaign 引流页</span>（灵魂匹配局）和 <span class="highlight">Demo 产品页</span>（完整 MVP 功能 Demo，含6大核心功能）。</p>
+      <p>技术栈：纯静态 HTML + CSS + JavaScript，无后端依赖，无构建工具，浏览器直接打开即可运行。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>在线体验</h2>
+    <div class="links-box">
+      <a href="../index.html" target="_blank">作品链接（Campaign + Demo）</a>
+      <a href="../demo.html?page=timeline&from=campaign" target="_blank">直接体验 Demo</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>引流海报素材</h2>
+    <div class="poster-grid">
+      <div class="poster-card">
+        <img src="A-品牌衔接.png" alt="品牌衔接海报">
+        <div class="label">A · 品牌衔接</div>
+      </div>
+      <div class="poster-card">
+        <img src="B-真实故事.png" alt="真实故事海报">
+        <div class="label">B · 真实故事</div>
+      </div>
+      <div class="poster-card">
+        <img src="C-迷茫共鸣.png" alt="迷茫共鸣海报">
+        <div class="label">C · 迷茫共鸣</div>
+      </div>
+      <div class="poster-card">
+        <img src="D-功能亮点.png" alt="功能亮点海报">
+        <div class="label">D · 功能亮点</div>
+      </div>
+      <div class="poster-card">
+        <img src="E-分享裂变.png" alt="分享裂变海报">
+        <div class="label">E · 分享裂变</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>6大核心功能</h2>
+    <div class="features">
+      <div class="feature-item">
+        <div class="num">01 时间线追踪</div>
+        <div class="desc">记录故事的每一次「后来」，多版本回答沿时间轴排列</div>
+      </div>
+      <div class="feature-item">
+        <div class="num">02 同路人匹配</div>
+        <div class="desc">AI帮你找到经历相似的人，看看他们的后来</div>
+      </div>
+      <div class="feature-item">
+        <div class="num">03 话题圈子</div>
+        <div class="desc">和同路人一起聊「后来」</div>
+      </div>
+      <div class="feature-item">
+        <div class="num">04 追问互动</div>
+        <div class="desc">追问你想知道的每一个后来</div>
+      </div>
+      <div class="feature-item">
+        <div class="num">05 故事海报</div>
+        <div class="desc">AI提取金句生成分享海报</div>
+      </div>
+      <div class="feature-item">
+        <div class="num">06 智慧豆钱包</div>
+        <div class="desc">打赏答主，激励持续更新</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  后来的答案 · 知乎黑客松 2026 参赛作品
+</div>
+
+</body>
+</html>
